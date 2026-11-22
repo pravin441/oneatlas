@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+/* Dark mode applies whenever an ancestor has the "dark" class.
+   next-themes will add/remove that class on <html> for us. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Design tokens: LIGHT theme ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafc;
+  --foreground: #0b0b14;
+  --card: #ffffff;
+  --card-foreground: #0b0b14;
+  --muted: #f0f1f6;
+  --muted-foreground: #5a6072;
+  --border: #e3e5ee;
+  --primary: #5b5bf0;
+  --primary-foreground: #ffffff;
+  --accent: #ecebff;
+  --accent-foreground: #3a3ac2;
+  --ring: #5b5bf0;
+  --success: #12a150;
+  --warning: #d97706;
+  --danger: #dc2626;
+
+  --chart-1: #5b5bf0;
+  --chart-2: #0ea5e9;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #ec4899;
+
+  --radius: 0.75rem;
 }
 
+/* ---------- Design tokens: DARK theme ---------- */
+.dark {
+  --background: #07070d;
+  --foreground: #ededf5;
+  --card: #0f0f1a;
+  --card-foreground: #ededf5;
+  --muted: #161624;
+  --muted-foreground: #9a9db3;
+  --border: #23233a;
+  --primary: #7c7cff;
+  --primary-foreground: #0b0b14;
+  --accent: #1c1c38;
+  --accent-foreground: #b4b4ff;
+  --ring: #7c7cff;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  --chart-1: #7c7cff;
+  --chart-2: #38bdf8;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #f472b6;
+}
+
+/* Tell Tailwind about our tokens so we can write
+   bg-background, text-foreground, border-border, etc. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 }
