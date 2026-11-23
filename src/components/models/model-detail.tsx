@@ -49,7 +49,7 @@ export async function ModelDetail({
           {model.name}
         </h1>
         <p className="mt-1 text-muted-foreground">
-          by {model.lab.name}
+          by <Link href={`/labs/${model.lab.slug}`} className="hover:text-foreground hover:underline">{model.lab.name}</Link>
           {model.lab.country ? `, ${model.lab.country}` : ""}
         </p>
         {model.description ? (
@@ -112,7 +112,7 @@ export async function ModelDetail({
                 {model.offerings.map((o, i) => (
                   <tr key={o.provider.slug}>
                     <td className="px-4 py-3 font-medium">
-                      {o.provider.name}
+                      <Link href={`/providers/${o.provider.slug}`} className="hover:text-primary hover:underline">{o.provider.name}</Link>
                       {i === 0 ? (
                         <Badge variant="primary" className="ml-2">
                           Lowest input
