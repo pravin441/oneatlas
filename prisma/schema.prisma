@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ModelType {
+  CHAT
+  EMBEDDING
+  IMAGE
+  AUDIO
+  VIDEO
+}
+
+enum DataSource {
+  SAMPLE
+  SNAPSHOT
+}
+
+model Lab {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  description String?
+  website     String?
+  country     String?
+  foundedYear Int?
+  dataSource  DataSource @default(SAMPLE)
+  createdAt   DateTime   @default(now())
+
+  models Model[]
+}
+
+model Provider {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  description String?
+  website     String?
+  dataSource  DataSource @default(SAMPLE)
+  createdAt   DateTime   @default(now())
+
+  offerings ModelProvider[]
+}
+
+model Model {
+  id              String     @id @default(cuid())
+  slug            String     @unique
+  name            String
+  description     String?
+  type            ModelType  @default(CHAT)
+  releaseDate     DateTime?
+  contextWindow   Int
+  maxOutputTokens Int?
+  inputModalities  String[]
+  outputModalities String[]
+  capabilities     String[]
+  dataSource      DataSource @default(SAMPLE)
+  createdAt       DateTime   @default(now())
+
+  labId String
+  lab   Lab    @relation(fields: [labId], references: [id], onDelete: Cascade)
+
+  offerings ModelProvider[]
+  scores    BenchmarkScore[]
+
+  @@index([labId])
+  @@index([type])
+  @@index([releaseDate])
+  @@index([contextWindow])
+}
+
+model ModelProvider {
+  id                 String     @id @default(cuid())
+  inputPricePerMTok  Decimal    @db.Decimal(12, 4)
+  outputPricePerMTok Decimal    @db.Decimal(12, 4)
+  dataSource         DataSource @default(SAMPLE)
+
+  modelId    String
+  providerId String
+  model      Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, providerId])
+  @@index([providerId])
+  @@index([inputPricePerMTok])
+}
+
+model Benchmark {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  category    String
+  description String?
+  maxScore    Float      @default(100)
+  dataSource  DataSource @default(SAMPLE)
+
+  scores BenchmarkScore[]
+
+  @@index([category])
+}
+
+model BenchmarkScore {
+  id         String     @id @default(cuid())
+  score      Float
+  dataSource DataSource @default(SAMPLE)
+
+  modelId     String
+  benchmarkId String
+  model       Model     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  benchmark   Benchmark @relation(fields: [benchmarkId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, benchmarkId])
+  @@index([benchmarkId, score])
+}
